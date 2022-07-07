@@ -1,4 +1,4 @@
-# hello-world
+# forum-front-end-vue
 
 ## Project setup
 ```
