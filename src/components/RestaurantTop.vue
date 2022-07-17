@@ -8,7 +8,7 @@
           <router-link :to="{name: 'restaurant', params: {id: restaurant.id } }">
             <img
               class="card-img"
-              :src="restaurant.image"
+              :src="restaurant.image | emptyImage"
             >
           </router-link>
         </div>
@@ -49,7 +49,9 @@
 </template>
 
 <script>
+import {emptyImageFilter} from './../utils/mixins'
 export default {
+  mixins: [emptyImageFilter],
   props: {
     initialRestaurant: {
       type: Object,

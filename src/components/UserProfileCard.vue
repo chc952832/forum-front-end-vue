@@ -1,7 +1,7 @@
 <template>
   <div class="row no-gutters">
     <div class="col-md-4">
-      <img :src="user.image" width="300px" height="300px">
+      <img :src="user.image | emptyImage" width="300px" height="300px">
     </div>
     <div class="col-md-8">
       <div class="card-body">
@@ -19,7 +19,7 @@
         <form action="/following/1?_method=DELETE" method="POST" style="display: contents;">
           <template v-if="isCurrentUser">
             <router-link
-              :to="{ name: 'user', params: { id: user.id } }"
+              :to="{ name: 'user-edit', params: { id: user.id } }"
               class="btn btn-primary"
             >
               Edit
@@ -41,7 +41,9 @@
 </template>
 
 <script>
+import {emptyImageFilter} from './../utils/mixins'
 export default {
+  mixins: [emptyImageFilter],
   props: {
     user: {
       type: Object,

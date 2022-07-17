@@ -2,7 +2,7 @@
   <div class="col-3">
     <router-link :to="{name: 'user', params: {id: user.id} }">
       <img
-        :src="user.image"
+        :src="user.image | emptyImage"
         width="140px"
         height="140px"
       >
@@ -31,7 +31,9 @@
 </template>
 
 <script>
+import {emptyImageFilter} from './../utils/mixins'
 export default {
+  mixins: [emptyImageFilter],
   props: {
     initialUser: {
       type: Object,

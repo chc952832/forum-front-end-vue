@@ -7,14 +7,16 @@
         <router-link 
         :to="{ name: 'restaurant', params: {id: comment.RestaurantId} }"
         v-for="comment in comments" :key="comment.id">
-          <img :src="comment.Restaurant.image" width="60" height="60" class="avatar">
+          <img :src="comment.Restaurant.image | emptyImage " width="60" height="60" class="avatar">
         </router-link>
     </div>
   </div>
 </template>
 
 <script>
+import {emptyImageFilter} from './../utils/mixins'
 export default {
+  mixins: [emptyImageFilter],
   props: {
     comments: {
       type: Array,
