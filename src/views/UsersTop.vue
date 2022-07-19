@@ -15,52 +15,11 @@
 </template>
 
 <script>
-const dummyData = {
-  "users": [
-      {
-          "id": 1,
-          "name": "root",
-          "email": "root@example.com",
-          "password": "$2a$10$75ECfZeCAP6jjrtfRQY6M.JmmqFFkOSlFoN41j7w1VjmYcWNlh7PW",
-          "isAdmin": true,
-          "image": 'https://i.imgur.com/2js0afa.jpg',
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z",
-          "Followers": [],
-          "FollowerCount": 0,
-          "isFollowed": false
-      },
-      {
-          "id": 2,
-          "name": "user1",
-          "email": "user1@example.com",
-          "password": "$2a$10$JK625lENOSIBB8d/niJM/uid1JwvsjAzkkpQD9l7uNl7tHoRo0ISW",
-          "isAdmin": false,
-          "image": 'https://pbs.twimg.com/media/FF-Ek0nVUAEOfsH.png',
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z",
-          "Followers": [],
-          "FollowerCount": 0,
-          "isFollowed": false
-      },
-      {
-          "id": 3,
-          "name": "user2",
-          "email": "user2@example.com",
-          "password": "$2a$10$i6wMMzH9OLXzdHaorPVglOk373SREFyL5dHvyrvOvPjmbm.//8D0a",
-          "isAdmin": false,
-          "image": 'https://pbs.twimg.com/media/FF-Emb1VcAI3GXJ.png',
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z",
-          "Followers": [],
-          "FollowerCount": 0,
-          "isFollowed": false
-      }
-  ]
-}
 
 import NavTabs from './../components/NavTabs.vue'
 import UserCard from './../components/UserCard.vue'
+import usersAPI from './../apis/users'
+import { Toast } from './../utils/helper'
 export default {
   components: {
     NavTabs,
@@ -72,9 +31,24 @@ export default {
     }
   },
   methods: {
-    fetchUsers() {
-      const {users} = dummyData
-      this.users = users
+    async fetchUsers() {
+      try {
+        const { data } = await usersAPI.getTopUsers()
+        // 只是把FollowerCount改成followerCount
+        this.users = data.users.map(user => ({
+          id: user.id,
+          name: user.name,
+          image: user.image,
+          followerCount: user.FollowerCount,
+          isFollowed: user.isFollowed
+        }))
+      } catch (error) {
+        console.log(error)
+        Toast.fire({
+          icon: 'error',
+          title: '無法取得美食達人，請稍後再試'
+        })
+      }
     }
   },
   created() {

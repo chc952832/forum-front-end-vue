@@ -27,7 +27,7 @@
             >Show</router-link>
 
             <button
-              @click.stop.prevent="deleteFavorite"
+              @click.stop.prevent="deleteFavorite(restaurant.id)"
               v-if="restaurant.isFavorited"
               type="button"
               class="btn btn-danger mr-2"
@@ -35,7 +35,7 @@
               移除最愛
             </button>
             <button
-              @click.stop.prevent="addFavorite"
+              @click.stop.prevent="addFavorite(restaurant.id)"
               v-else
               type="button"
               class="btn btn-primary"
@@ -50,6 +50,8 @@
 
 <script>
 import {emptyImageFilter} from './../utils/mixins'
+import usersAPI from './../apis/users'
+import { Toast } from './../utils/helper'
 export default {
   mixins: [emptyImageFilter],
   props: {
@@ -64,18 +66,40 @@ export default {
     }
   },
   methods: {
-    addFavorite() {
-      this.restaurant= {
+    async addFavorite(restaurantId) {
+      try {
+        const {data} = await usersAPI.addFavorite({restaurantId})
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.restaurant= {
         ...this.restaurant,
         isFavorited: true,
         FavoriteCount: this.restaurant.FavoriteCount + 1
+        }
+      } catch(error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法加入最愛，請稍後再試'
+        })
       }
     },
-    deleteFavorite() {
-      this.restaurant= {
-        ...this.restaurant,  
+    async deleteFavorite(restaurantId) {
+      try {
+        const {data} = await usersAPI.deleteFavorite({restaurantId})
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.restaurant= {
+        ...this.restaurant,
         isFavorited: false,
         FavoriteCount: this.restaurant.FavoriteCount - 1
+        }
+      } catch(error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法移除最愛，請稍後再試'
+        })
       }
     },
   }

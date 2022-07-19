@@ -9,6 +9,7 @@
     </div>
     <!-- 分頁標籤 RestaurantPagination -->
     <RestaurantsPagination 
+    v-if="totalPage.length > 1"
     :current-page="currentPage" 
     :total-page="totalPage"
     :previous-page="previousPage"
@@ -19,280 +20,16 @@
 </template>
 
 <script>
-const dummyData = {
-  "restaurants": [
-      {
-          "id": 5,
-          "name": "Mrs. Oscar Rowe",
-          "tel": "(597) 652-8105 x1354",
-          "address": "704 Block Harbors",
-          "opening_hours": "08:00",
-          "description": "corrupti",
-          "image": "https://loremflickr.com/320/240/restaurant,food/?random=46.132258702318715",
-          "viewCounts": 0,
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z",
-          "CategoryId": 1,
-          "Category": {
-              "id": 1,
-              "name": "中式料理",
-              "createdAt": "2022-07-02T19:36:40.000Z",
-              "updatedAt": "2022-07-02T19:36:40.000Z"
-          },
-          "isFavorited": false,
-          "isLiked": false
-      },
-      {
-          "id": 11,
-          "name": "Jayce Cremin",
-          "tel": "087-658-3661 x1475",
-          "address": "23896 Johns Mountain",
-          "opening_hours": "08:00",
-          "description": "Consectetur autem cupiditate.\nRepudiandae iusto vo",
-          "image": "https://loremflickr.com/320/240/restaurant,food/?random=2.1716453817484327",
-          "viewCounts": 0,
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z",
-          "CategoryId": 1,
-          "Category": {
-              "id": 1,
-              "name": "中式料理",
-              "createdAt": "2022-07-02T19:36:40.000Z",
-              "updatedAt": "2022-07-02T19:36:40.000Z"
-          },
-          "isFavorited": false,
-          "isLiked": false
-      },
-      {
-          "id": 16,
-          "name": "Angus Hansen",
-          "tel": "957-397-5874 x0554",
-          "address": "12855 Daniel Overpass",
-          "opening_hours": "08:00",
-          "description": "Rerum reprehenderit dolorem qui itaque natus. Volu",
-          "image": "https://loremflickr.com/320/240/restaurant,food/?random=46.29821137756305",
-          "viewCounts": 0,
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z",
-          "CategoryId": 1,
-          "Category": {
-              "id": 1,
-              "name": "中式料理",
-              "createdAt": "2022-07-02T19:36:40.000Z",
-              "updatedAt": "2022-07-02T19:36:40.000Z"
-          },
-          "isFavorited": false,
-          "isLiked": false
-      },
-      {
-          "id": 17,
-          "name": "Gabrielle Mann",
-          "tel": "344-186-8669 x77406",
-          "address": "8885 Sauer Extensions",
-          "opening_hours": "08:00",
-          "description": "quis",
-          "image": "https://loremflickr.com/320/240/restaurant,food/?random=83.0352394936601",
-          "viewCounts": 0,
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z",
-          "CategoryId": 1,
-          "Category": {
-              "id": 1,
-              "name": "中式料理",
-              "createdAt": "2022-07-02T19:36:40.000Z",
-              "updatedAt": "2022-07-02T19:36:40.000Z"
-          },
-          "isFavorited": false,
-          "isLiked": false
-      },
-      {
-          "id": 32,
-          "name": "Marisol Hyatt",
-          "tel": "(731) 489-9359 x04808",
-          "address": "279 Ephraim Ports",
-          "opening_hours": "08:00",
-          "description": "qui",
-          "image": "https://loremflickr.com/320/240/restaurant,food/?random=48.530270645170944",
-          "viewCounts": 0,
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z",
-          "CategoryId": 1,
-          "Category": {
-              "id": 1,
-              "name": "中式料理",
-              "createdAt": "2022-07-02T19:36:40.000Z",
-              "updatedAt": "2022-07-02T19:36:40.000Z"
-          },
-          "isFavorited": false,
-          "isLiked": false
-      },
-      {
-          "id": 36,
-          "name": "Ms. Art Lemke",
-          "tel": "574-178-1960",
-          "address": "035 Hirthe Hills",
-          "opening_hours": "08:00",
-          "description": "architecto ut ut",
-          "image": "https://loremflickr.com/320/240/restaurant,food/?random=22.61275476775788",
-          "viewCounts": 0,
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z",
-          "CategoryId": 1,
-          "Category": {
-              "id": 1,
-              "name": "中式料理",
-              "createdAt": "2022-07-02T19:36:40.000Z",
-              "updatedAt": "2022-07-02T19:36:40.000Z"
-          },
-          "isFavorited": false,
-          "isLiked": false
-      },
-      {
-          "id": 40,
-          "name": "Mrs. Jovan Hintz",
-          "tel": "552-656-4484 x650",
-          "address": "95953 Marty Locks",
-          "opening_hours": "08:00",
-          "description": "Nisi rerum hic quia doloribus modi. Id repellendus",
-          "image": "https://loremflickr.com/320/240/restaurant,food/?random=44.74920089806456",
-          "viewCounts": 0,
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z",
-          "CategoryId": 1,
-          "Category": {
-              "id": 1,
-              "name": "中式料理",
-              "createdAt": "2022-07-02T19:36:40.000Z",
-              "updatedAt": "2022-07-02T19:36:40.000Z"
-          },
-          "isFavorited": false,
-          "isLiked": false
-      },
-      {
-          "id": 42,
-          "name": "Beau Prosacco",
-          "tel": "929-914-4011 x3931",
-          "address": "318 Luettgen Avenue",
-          "opening_hours": "08:00",
-          "description": "Natus amet consectetur suscipit.",
-          "image": "https://loremflickr.com/320/240/restaurant,food/?random=26.937771750067263",
-          "viewCounts": 0,
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z",
-          "CategoryId": 1,
-          "Category": {
-              "id": 1,
-              "name": "中式料理",
-              "createdAt": "2022-07-02T19:36:40.000Z",
-              "updatedAt": "2022-07-02T19:36:40.000Z"
-          },
-          "isFavorited": false,
-          "isLiked": false
-      },
-      {
-          "id": 44,
-          "name": "Delfina Littel Sr.",
-          "tel": "931.188.1481",
-          "address": "917 Elna Motorway",
-          "opening_hours": "08:00",
-          "description": "Sunt sunt fuga optio.",
-          "image": "https://loremflickr.com/320/240/restaurant,food/?random=68.06016914120376",
-          "viewCounts": 0,
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z",
-          "CategoryId": 1,
-          "Category": {
-              "id": 1,
-              "name": "中式料理",
-              "createdAt": "2022-07-02T19:36:40.000Z",
-              "updatedAt": "2022-07-02T19:36:40.000Z"
-          },
-          "isFavorited": false,
-          "isLiked": false
-      },
-      {
-          "id": 48,
-          "name": "Maya Lynch",
-          "tel": "(786) 983-5120 x00881",
-          "address": "08661 Chasity Wall",
-          "opening_hours": "08:00",
-          "description": "Optio laborum similique itaque doloremque velit. C",
-          "image": "https://loremflickr.com/320/240/restaurant,food/?random=70.94592725011208",
-          "viewCounts": 0,
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z",
-          "CategoryId": 1,
-          "Category": {
-              "id": 1,
-              "name": "中式料理",
-              "createdAt": "2022-07-02T19:36:40.000Z",
-              "updatedAt": "2022-07-02T19:36:40.000Z"
-          },
-          "isFavorited": false,
-          "isLiked": false
-      }
-  ],
-  "categories": [
-      {
-          "id": 1,
-          "name": "中式料理",
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z"
-      },
-      {
-          "id": 2,
-          "name": "日本料理",
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z"
-      },
-      {
-          "id": 3,
-          "name": "義大利料理",
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z"
-      },
-      {
-          "id": 4,
-          "name": "墨西哥料理",
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z"
-      },
-      {
-          "id": 5,
-          "name": "素食料理",
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z"
-      },
-      {
-          "id": 6,
-          "name": "美式料理",
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z"
-      },
-      {
-          "id": 7,
-          "name": "複合式料理",
-          "createdAt": "2022-07-02T19:36:40.000Z",
-          "updatedAt": "2022-07-02T19:36:40.000Z"
-      }
-  ],
-  "categoryId": "",
-  "page": 1,
-  "totalPage": [
-      1,
-      2,
-      3,
-      4,
-      5
-  ],
-  "prev": 1,
-  "next": 2
-}
 
 import NavTabs from './../components/NavTabs.vue'
 import RestaurantCard from './../components/RestaurantCard.vue'
 import RestaurantsNavPills from './../components/RestaurantsNavPills.vue'
 import RestaurantsPagination from './../components/RestaurantsPagination.vue'
+
+// STEP 1：透過 import 匯入剛剛撰寫好用來呼叫 API 的方法
+import restaurantsAPI from './../apis/restaurants'
+import { Toast } from './../utils/helper'
+
 export default {
   components: {
     NavTabs,
@@ -312,18 +49,42 @@ export default {
     }
   },
   created() {
-    this.fetchRestaurants()
+    // STEP 3：在 created 的時候呼叫 fetchRestaurants 方法
+    const { page = '', categoryId = '' } = this.$route.query
+    this.fetchRestaurants({ queryPage: page, queryCategoryId: categoryId})
+  },
+  // 使用 beforeRouteUpdate 方法取得使用者路由變化
+  beforeRouteUpdate (to, from, next) {
+    // 設預設值, 如果沒有就給空字串
+    const { page = '', categoryId = '' } = to.query
+    this.fetchRestaurants({ queryPage: page, queryCategoryId:categoryId })
+    next()
   },
   methods: {
-    fetchRestaurants() {
-      const {restaurants, categories, categoryId, page, totalPage, prev, next } = dummyData
-      this.restaurants = restaurants
-      this.categories = categories
-      this.categoryId = categoryId
-      this.currentPage = page
-      this.totalPage = totalPage
-      this.previousPage = prev
-      this.nextPage = next
+    // STEP 2：將 fetchRestaurants 改成 async...await 的語法
+    // 並且可以帶入參數 page 與 categoryId
+    // 呼叫 API 後取得 response
+    async fetchRestaurants({ queryPage, queryCategoryId}) {
+      try{
+        const response = await restaurantsAPI.getRestaurants({page: queryPage, categoryId: queryCategoryId})
+        
+        // 透過解構賦值，將所需要的資料從 response.data 取出
+        const {restaurants, categories, categoryId, page, totalPage, prev, next } = response.data
+        // 將從伺服器取得的 data 帶入 Vue 內
+        this.restaurants = restaurants
+        this.categories = categories
+        this.categoryId = categoryId
+        this.currentPage = page
+        this.totalPage = totalPage
+        this.previousPage = prev
+        this.nextPage = next
+      } catch(error) {
+        console.log('error', error)
+        Toast.fire({
+            icon: 'error',
+            title: '無法取得餐廳資料，請稍後再試'
+        })
+      }
     }
   }
 }
