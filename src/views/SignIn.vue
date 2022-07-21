@@ -92,6 +92,10 @@ export default {
         }
         // 將 token 存放在 localStorage 內
         localStorage.setItem('token', data.token)
+
+        // 透過setCurrentUser 把使用者資料傳到 Vuex 的 state 中
+          // 傳入 data.user 到 setCurrentUser 方法中
+        this.$store.commit('setCurrentUser', data.user)
         // 成功登入後轉址到餐廳首頁, 因為成功登入就會轉址，所以不用還原 isProcessing 的狀態(轉址後使用者就無法再次點擊submit按鈕)
         this.$router.push('/restaurants')
       // 如果噴錯就會執行catch的程式碼

@@ -50,5 +50,17 @@ export default {
         headers: { Authorization: `Bearer ${getToken()}` }
       })
     }
+  },
+  users: {
+    get() {
+      return apiHelper.get('/admin/users', {
+        headers: { Authorization: `Bearer ${getToken()}` }
+      })
+    },
+    toggleIsAdmin({userId}) {
+      return apiHelper.put(`/admin/users/${userId}`, null, {
+        headers: { Authorization: `Bearer ${getToken()}` }
+      })
+    }
   }
 }

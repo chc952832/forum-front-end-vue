@@ -2,6 +2,21 @@ import { apiHelper } from './../utils/helper'
 const getToken = () => localStorage.getItem('token')
 
 export default {
+  update({userId, formData}) {
+    return apiHelper.put(`/users/${userId}`, formData, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
+  getCurrentUser() {
+    return apiHelper.get('/get_current_user', {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
+  get({userId}) {
+    return apiHelper.get(`/users/${userId}`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
   addFavorite({ restaurantId }) {
     // * .post第二個參數要帶入data(也就是要發送的資料), 若沒有則寫null
     return apiHelper.post(`/favorite/${restaurantId}`, null, {

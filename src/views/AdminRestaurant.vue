@@ -46,6 +46,7 @@
 <script>
 import {emptyImageFilter} from './../utils/mixins'
 import adminAPI from './../apis/admin'
+import { Toast } from './../utils/helper'
 export default {
   name: 'AdminRestaurant',
   mixins: [emptyImageFilter],

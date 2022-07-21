@@ -54,45 +54,50 @@
 </template>
 
 <script>
+import { mapState} from 'vuex'
+
 /* eslint-disable */     
 // 假資料：模擬API回傳的內容
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: '管理者',
-    email: 'root@example.com',
-    image: 'https://i.pravatar.cc/300',
-    isAdmin: true
-  },
-  isAuthenticated: true
-}
+// const dummyUser = {
+//   currentUser: {
+//     id: 1,
+//     name: '管理者',
+//     email: 'root@example.com',
+//     image: 'https://i.pravatar.cc/300',
+//     isAdmin: true
+//   },
+//   isAuthenticated: true
+// }
 export default {
-  // Vue 會在沒有資料時使用此預設值，一旦接受到外部資料，這組 currentUser 就會被覆寫。
-  data () {
-    return  {
-      currentUser: {
-        id: -1,
-        name: '',
-        email: '',
-        image: '',
-        isAdmin: false
-      },
-      isAuthenticated: false
-    }
-  },
-  methods: {
-    // 向後端API拉取資料
-    fetchUser() {
-      this.currentUser= {
-        // 在key值相同時, dummyUser.currentUser的資料會覆蓋currentUser的資料
-        ...this.currentUser, // 預設資料
-        ...dummyUser.currentUser // 透過API拉進來的資料
-      }
-      this.isAuthenticated = dummyUser.isAuthenticated
-    }
-  },
-  created () {
-    this.fetchUser() // 呼叫資料
+  computed: {
+    ...mapState(['currentUser', 'isAuthenticated'])
   }
+  // Vue 會在沒有資料時使用此預設值，一旦接受到外部資料，這組 currentUser 就會被覆寫。
+  // data () {
+  //   return  {
+  //     currentUser: {
+  //       id: -1,
+  //       name: '',
+  //       email: '',
+  //       image: '',
+  //       isAdmin: false
+  //     },
+  //     isAuthenticated: false
+  //   }
+  // },
+  // methods: {
+  //   // 向後端API拉取資料
+  //   fetchUser() {
+  //     this.currentUser= {
+  //       // 在key值相同時, dummyUser.currentUser的資料會覆蓋currentUser的資料
+  //       ...this.currentUser, // 預設資料
+  //       ...dummyUser.currentUser // 透過API拉進來的資料
+  //     }
+  //     this.isAuthenticated = dummyUser.isAuthenticated
+  //   }
+  // },
+  // created () {
+  //   this.fetchUser() // 呼叫資料
+  // }
 }
 </script>
