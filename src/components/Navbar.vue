@@ -44,6 +44,7 @@
           <button
             type="button" 
             class="btn btn-sm btn-outline-success my-2 my-sm-0"
+            @click="logout"
             >
             登出
           </button>
@@ -71,6 +72,12 @@ import { mapState} from 'vuex'
 export default {
   computed: {
     ...mapState(['currentUser', 'isAuthenticated'])
+  },
+  methods: {
+    logout() {
+      this.$store.commit('revokeAuthentication')
+      this.$router.push('/signin')
+    }
   }
   // Vue 會在沒有資料時使用此預設值，一旦接受到外部資料，這組 currentUser 就會被覆寫。
   // data () {
@@ -101,3 +108,20 @@ export default {
   // }
 }
 </script>
+
+<style scoped>
+  .navbar-toggler {
+    min-width: 70px;
+    margin-right: 0;
+  }
+
+  nav.bg-dark {
+    padding: 14px 16px;
+    background-color: #bd2333 !important;
+  }
+
+  .navbar-brand {
+    font-size: 19px;
+    padding: 0;
+}
+</style>

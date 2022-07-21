@@ -1,6 +1,7 @@
 <template>
   <div class="container py-5">
-    <div class="row">
+    <Spinner v-if="isLoading"/>
+    <div class="row" v-else>
       <div class="col-md-12">
         <h1>{{ restaurant.name }}</h1>
         <span class="badge badge-secondary mt-1 mb-3">
@@ -44,11 +45,15 @@
 </template>
 
 <script>
+import Spinner from "./../components/Spinner.vue";
 import {emptyImageFilter} from './../utils/mixins'
 import adminAPI from './../apis/admin'
 import { Toast } from './../utils/helper'
 export default {
   name: 'AdminRestaurant',
+  components: {
+    Spinner
+  },
   mixins: [emptyImageFilter],
   data () {
     return {
@@ -61,7 +66,8 @@ export default {
         tel: '',
         address: '',
         description: ''
-      }
+      },
+      isLoading: true
     }
   },
   mounted () {
@@ -77,6 +83,7 @@ export default {
   methods: {
     async fetchRestaurant (restaurantId) {
       try {
+        this.isLoading = true
         const { data } = await adminAPI.restaurants.getDetail({restaurantId})
         const {id, name, Category, image, opening_hours: openingHours, tel, address, description} = data.restaurant
         this.restaurant = {
@@ -90,7 +97,9 @@ export default {
           address,
           description
         }
+        this.isLoading = false
       } catch(error) {
+        this.isLoading = false
         console.log('error', error)
         Toast.fire({
           icon: 'error',

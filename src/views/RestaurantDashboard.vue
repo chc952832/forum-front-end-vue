@@ -1,34 +1,34 @@
 <template>
   <div class="container py-5">
     <Navbar />
-    <div>
-      <h1>{{ restaurant.name }}</h1>
-      <span class="badge badge-secondary mt-1 mb-3">
-        {{ restaurant.categoryName }}
-      </span>
-    </div>
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <div>
+        <h1>{{ restaurant.name }}</h1>
+        <span class="badge badge-secondary mt-1 mb-3">
+          {{ restaurant.categoryName }}
+        </span>
+      </div>
 
-    <hr>
+      <hr />
 
-    <ul>
-      <li>評論數： {{ restaurant.commentsLength }} </li>
-      <li>瀏覽次數： {{ restaurant.viewCounts }} </li>
-    </ul>
+      <ul>
+        <li>評論數： {{ restaurant.commentsLength }}</li>
+        <li>瀏覽次數： {{ restaurant.viewCounts }}</li>
+      </ul>
 
-    <button
-      type="button"
-      class="btn btn-link"
-      @click="$router.back()"
-    >
-      回上一頁
-    </button>
+      <button type="button" class="btn btn-link" @click="$router.back()">
+        回上一頁
+      </button>
+    </template>
   </div>
 </template>
 
 <script>
-import Navbar from './../components/Navbar.vue'
-import restaurantsAPI from './../apis/restaurants'
-import { Toast } from './../utils/helper'
+import Navbar from "./../components/Navbar.vue";
+import Spinner from "./../components/Spinner.vue";
+import restaurantsAPI from "./../apis/restaurants";
+import { Toast } from "./../utils/helper";
 // const dummyData = {
 //     "restaurant": {
 //         "id": 1,
@@ -108,49 +108,54 @@ import { Toast } from './../utils/helper'
 // }
 export default {
   components: {
-    Navbar
+    Navbar,
+    Spinner,
   },
   data() {
     return {
       restaurant: {
         id: -1,
-        name: '',
-        categoryName: '',
+        name: "",
+        categoryName: "",
         commentsLength: 0,
-        viewCounts: 0
-      }
-    }
+        viewCounts: 0,
+        isLoading: true,
+      },
+    };
   },
   methods: {
     async fetchRestaurantDashboard(restaurantId) {
       try {
-        const { data } = await restaurantsAPI.getRestaurant({restaurantId})
-        const {restaurant} = data
-        const { id, name, viewCounts, Category, Comments} = restaurant
+        this.isLoading = true;
+        const { data } = await restaurantsAPI.getRestaurant({ restaurantId });
+        const { restaurant } = data;
+        const { id, name, viewCounts, Category, Comments } = restaurant;
         this.restaurant = {
           ...this.restaurant,
           id,
           name,
-          categoryName: Category ? Category.name : '未分類',
+          categoryName: Category ? Category.name : "未分類",
           commentsLength: Comments.length,
-          viewCounts
-        }
-      } catch(error) {
+          viewCounts,
+        };
+        this.isLoading = false;
+      } catch (error) {
+        this.isLoading = false;
         Toast.fire({
-          icon: 'error',
-          title: '無法取得餐廳資料，請稍後再試'
-        })
+          icon: "error",
+          title: "無法取得餐廳資料，請稍後再試",
+        });
       }
-    }
+    },
   },
   beforeRouteUpdate(to, from, next) {
-    const {id} = to.params
-    this.fetchRestaurantDashboard(id)
-    next()
+    const { id } = to.params;
+    this.fetchRestaurantDashboard(id);
+    next();
   },
   created() {
-    const { id } = this.$route.params
-    this.fetchRestaurantDashboard(id)
-  }
-}
+    const { id } = this.$route.params;
+    this.fetchRestaurantDashboard(id);
+  },
+};
 </script>

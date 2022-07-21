@@ -7,6 +7,17 @@ import store from './../store'
 
 Vue.use(VueRouter)
 
+const authorizeIsAdmin = (to, from, next) => {
+  const currentUser = store.state.currentUser //取出currentUser
+  // 確定currentUser已取到, 且不是admin
+  if (currentUser && !currentUser.isAdmin) {
+    next('not-found')
+    return
+  }
+  next()
+}
+
+
 const routes = [
   {
     path: '/',  // 根目錄
@@ -71,32 +82,38 @@ const routes = [
   {
     path: '/admin/restaurants',
     name: 'admin-restaurants',
-    component: () => import('../views/AdminRestaurants.vue')
+    component: () => import('../views/AdminRestaurants.vue'),
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '/admin/restaurants/new',
     name: 'admin-restaurant-new',
-    component: () => import('../views/AdminRestaurantNew.vue')
+    component: () => import('../views/AdminRestaurantNew.vue'),
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '/admin/restaurants/:id/edit',
     name: 'admin-restaurant-edit',
-    component: () => import('../views/AdminRestaurantEdit.vue')
+    component: () => import('../views/AdminRestaurantEdit.vue'),
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '/admin/restaurants/:id',
     name: 'admin-restaurant',
-    component: () => import('../views/AdminRestaurant.vue')
+    component: () => import('../views/AdminRestaurant.vue'),
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '/admin/categories',
     name: 'admin-categories',
-    component: () => import('../views/AdminCategories.vue')
+    component: () => import('../views/AdminCategories.vue'),
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '/admin/users',
     name: 'admin-users',
-    component: () => import('../views/AdminUsers.vue')
+    component: () => import('../views/AdminUsers.vue'), 
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '*', //由於 Vue Router 路由會由上往下進行匹配，所以當所有的路由都無法匹配，最後就會匹配到 path: '*'，星號(*) 是萬用字元，這裡代表「所有的網址」，也就是說不管使用者輸入什麼，只要找不到對應網頁，最後就會返回 NotFound 這個頁面。
@@ -110,9 +127,30 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  // 使用 dispatch 呼叫 Vuex 內的 actions
-  store.dispatch('fetchCurrentUser')
+// 每次路由改變都會觸發這段程式碼
+router.beforeEach(async(to, from, next) => {
+  // 從 localStorage 取出 token
+  const token = localStorage.getItem('token')
+  let isAuthenticated = store.state.isAuthenticated
+  const tokenInStore = store.state.token
+
+  // 如果有 token, 而且 localStorage 和 store 中的 token 發生改變時才驗證
+  if (token && token !== tokenInStore) {
+    // 使用 dispatch 呼叫 Vuex 內的 actions, 取得驗證成功與否
+     isAuthenticated = await store.dispatch('fetchCurrentUser')
+  }
+  // 不需要驗證 token 的頁面
+  const pathsWithoutAuthentication = ['sign-in', 'sign-up']
+  // 如果 token 無效且想要進入需要驗證的頁面, 則轉址到登入頁
+  if (!isAuthenticated && !pathsWithoutAuthentication.includes(to.name)) {
+    next('/signin')
+    return
+  }
+  // 如果 token 有效且想要進入不需要驗證的頁面, 則轉址到餐廳首頁
+  if (isAuthenticated && pathsWithoutAuthentication.includes(to.name)) {
+    next('/restaurants')
+    return
+  }
   next()
 })
 

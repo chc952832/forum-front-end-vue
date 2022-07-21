@@ -21,7 +21,7 @@ export default {
   name: 'AdminRestaurants',
   components: {
     AdminNav,
-    AdminRestaurantsTable
+    AdminRestaurantsTable,
   }
 }
 </script>

@@ -2,7 +2,8 @@
   <div class="container py-5">
     <!-- AdminNav Component -->
     <AdminNav />
-    <table class="table">
+    <Spinner v-if="isLoading"/>
+    <table class="table" v-else>
       <thead class="thead-dark">
         <tr>
           <th scope="col">
@@ -60,6 +61,7 @@
 
 <script>
 import AdminNav from './../components/AdminNav.vue'
+import Spinner from "./../components/Spinner.vue";
 import adminAPI from './../apis/admin'
 import { Toast } from './../utils/helper'
 import { mapState } from 'vuex'
@@ -67,11 +69,13 @@ import { mapState } from 'vuex'
 export default {
   name: 'AdminUsers',
   components: {
-    AdminNav
+    AdminNav,
+    Spinner
   },
   data () {
     return {
       users: [],
+      isLoading: true
     //   currentUser: {
     //     id: -1,
     //     isAdmin: true
@@ -87,13 +91,16 @@ export default {
   methods: {
     async fetchUsers() {
       try {
+        this.isLoading = true
         const { data } = await adminAPI.users.get()
         const {users} = data
         // const {profile} = this.currentUser
         // const {id, isAdmin} = profile
         this.users = users
         // this.currentUser = {id, isAdmin}
+        this.isLoading = false
       } catch(error) {
+        this.isLoading = false
         Toast.fire({
           icon: 'error',
           title: '無法取得使用者清單，請稍後再試'

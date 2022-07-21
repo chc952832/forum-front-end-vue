@@ -2,7 +2,6 @@
   <div class="container py-5">
      <!-- 1. 使用先前寫好的 AdminNav -->
     <AdminNav />
-
     <form class="my-4">
       <div class="form-row">
         <div class="col-auto">
@@ -25,7 +24,8 @@
         </div>
       </div>
     </form>
-    <table class="table">
+    <Spinner v-if="isLoading"/>
+    <table class="table" v-else>
       <thead class="thead-dark">
         <tr>
           <th
@@ -107,20 +107,23 @@
 
 <script>
 // import {v4 as uuidv4} from 'uuid'
-import AdminNav from '@/components/AdminNav'
+import AdminNav from './../components/AdminNav'
+import Spinner from "./../components/Spinner.vue";
 import adminAPI from './../apis/admin'
 import { Toast } from './../utils/helper'
 
 export default {
   components: {
-    AdminNav
+    AdminNav,
+    Spinner
   },
   // 定義 Vue 中使用的 data 資料
   data () {
     return {
       categories: [],
       newCategoryName: '',
-      isProcessing: false
+      isProcessing: false,
+      isLoading: true
     }
   },
   // 調用 `fetchCategories` 方法
@@ -131,6 +134,7 @@ export default {
     // 定義 `fetchCategories` 方法，把 `dummyData` 帶入 Vue 物件
     async fetchCategories () {
       try{
+        this.isLoading = true
         const { data } = await adminAPI.categories.get()
         // 在每一個 category 中都添加一個 isEditing 屬性和nameCached屬性(用來暫存編輯前原本的餐廳類別名稱)
         // 如果要直接回傳物件, 需要在外層加上括號()
@@ -139,7 +143,9 @@ export default {
           isEditing: false,
           nameCached: ''
         }))
+        this.isLoading = false
       } catch(error) {
+        this.isLoading = false
         console.log('error', error)
         Toast.fire({
           icon: 'error',
