@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
-const baseURL = 'http://localhost:3000/api'
+const baseURL = 'https://forum-express-api.herokuapp.com/api'
 
 // axios.create()方法會回傳一個axios實例, 將它存入變數apiHelper中, 並export出去給其他vue檔案使用
 const axiosInstance = axios.create({
